@@ -43,7 +43,7 @@
 	</resultMap>
 
 
-	<resultMap type="com.mycompany.webapp.dto.OrderCompleteMap" id="orderCompleteMap">
+	<resultMap type="com.mycompany.webapp.dto.ordercomplete.OrderCompleteMap" id="orderCompleteMap">
 		<id property="oid" column="oid"/>
 		<result property="odate" column="odate"/>
 		<result property="usedMileage" column="used_mileage"/>
@@ -62,7 +62,7 @@
 		<collection property="orderItemListMap" javaType="java.util.ArrayList" resultMap="orderItemListMap"/>
 	</resultMap>
 	
-	<resultMap type="com.mycompany.webapp.dto.OrderItemListMap" id="orderItemListMap">
+	<resultMap type="com.mycompany.webapp.dto.ordercomplete.OrderItemListMap" id="orderItemListMap">
 		<id property="pstockid" column="pstockid"/>
 		<result property="pcolorid" column="pcolorid"/>
 		<result property="bname" column="bname"/>
@@ -72,7 +72,22 @@
 		<result property="img1" column="img1"/>
 		<result property="ocount" column="ocount"/>
 	</resultMap>
+	
+	<resultMap type="com.mycompany.webapp.dto.orderlist.OrderListMap" id="orderListMap">
+		<id property="oid" column="oid"/>
+		<collection property="orderItemListMap" javaType="java.util.ArrayList" resultMap="orderItemListMap2"></collection>
+	</resultMap>
 
+	<resultMap type="com.mycompany.webapp.dto.orderlist.OrderItemListMap" id="orderItemListMap2">
+		<id property="pstockid" column="pstockid"/>
+		<result property="ocount" column="ocount"/>
+		<result property="bname" column="bname"/>
+		<result property="pname" column="pname"/>
+		<result property="scode" column="scode"/>
+		<result property="ccode" column="ccode"/>
+		<result property="img1" column="img1"/>
+		<result property="totalPrice" column="total_price"/>
+	</resultMap>
 	<select id="selectOrderByOid" parameterType="map" resultMap="orderCompleteMap">
 		select distinct
 		pstockid, ocount, pcolorid, bname, pname, scode, ccode, img1,
@@ -119,6 +134,17 @@
 		values (#{pstockid}, #{oid}, #{ocount},#{totalPrice},#{odate})
 	</insert>
 
+	<select id="selectAllOrderList" parameterType="String" resultMap="orderListMap">
+	select distinct oid, pstockid, ocount, bname, pname,
+			scode, ccode, img1, total_price
+		from orders 
+               join order_item using(oid)
+               join product_stock using(pstockid)
+               join product_color using(pcolorid) 
+               join product_common using(pcommonid)
+               join brand using(bno)
+		where orders.mid = #{mid}
+	</select>
 </mapper>
    
    

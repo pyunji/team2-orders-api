@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mycompany.webapp.dto.OrderCompleteMap;
+import com.mycompany.webapp.dto.ordercomplete.OrderCompleteMap;
+import com.mycompany.webapp.dto.orderlist.OrderListMap;
 import com.mycompany.webapp.security.JwtUtil;
 import com.mycompany.webapp.service.OrderService;
 import com.mycompany.webapp.vo.Orders;
@@ -70,6 +71,12 @@ public class OrderController {
 	public OrderCompleteMap showOrder(HttpServletRequest request, @RequestParam String oid) {
 		mid = JwtUtil.getMidFromRequest(request);
 		return orderService.selectOrderByOid(mid, oid);
+	}
+	
+	@GetMapping("/orderlist")
+	public List<OrderListMap> showAllOrder(HttpServletRequest request) {
+		mid = JwtUtil.getMidFromRequest(request);
+		return orderService.getAllOrderList(mid);
 	}
 
 }

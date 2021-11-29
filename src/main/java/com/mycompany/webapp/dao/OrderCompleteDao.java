@@ -5,7 +5,8 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.mycompany.webapp.dto.OrderCompleteMap;
+import com.mycompany.webapp.dto.ordercomplete.OrderCompleteMap;
+import com.mycompany.webapp.dto.orderlist.OrderListMap;
 //import com.mycompany.webapp.dto.OrderComplete;
 import com.mycompany.webapp.vo.OrderItem;
 import com.mycompany.webapp.vo.Orders;
@@ -18,4 +19,5 @@ public interface OrderCompleteDao {
 	int insertOrders(Orders order);
 	int insertOrderitem(OrderItem orderItem);
 	OrderCompleteMap selectOrderByOid(Map<String, String> map);
+	List<OrderListMap> selectAllOrderList(String mid);
 }
