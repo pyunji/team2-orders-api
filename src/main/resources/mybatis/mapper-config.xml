@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+<configuration>
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+	<typeAliases>
+<!-- 		<typeAlias type="com.mycompany.webapp.vo.ProductCommon" alias="productCommon"/>
+		<typeAlias type="com.mycompany.webapp.vo.ProductColor" alias="productColor"/>
+		<typeAlias type="com.mycompany.webapp.vo.ProductStock" alias="productStock"/>
+		<typeAlias type="com.mycompany.webapp.vo.Member" alias="member"/> -->
+		<typeAlias type="com.mycompany.webapp.vo.Orders" alias="orders"/>
+		<typeAlias type="com.mycompany.webapp.vo.OrderItem" alias="orderItem"/>
+<!-- 		<typeAlias type="com.mycompany.webapp.vo.Cart" alias="cart"/>
+		<typeAlias type="com.mycompany.webapp.vo.Brand" alias="brand"/>
+		<typeAlias type="com.mycompany.webapp.vo.Color" alias="color"/>
+		<typeAlias type="com.mycompany.webapp.vo.ProductCategory" alias="productCategory"/>
+		<typeAlias type="com.mycompany.webapp.vo.Category" alias="category"/>
+		<typeAlias type="com.mycompany.webapp.vo.Depth1" alias="depth1"/>
+		<typeAlias type="com.mycompany.webapp.vo.Depth2" alias="depth2"/>
+		<typeAlias type="com.mycompany.webapp.vo.Depth3" alias="depth3"/>
+		<typeAlias type="com.mycompany.webapp.vo.EventResult" alias="eventResult"/>
+		<typeAlias type="com.mycompany.webapp.vo.CouponDetail" alias="couponDetail"/>
+		<typeAlias type="com.mycompany.webapp.vo.Event" alias="event"/>
+		<typeAlias type="com.mycompany.webapp.vo.Mileage" alias="mileage"/>
+		<typeAlias type="com.mycompany.webapp.vo.PaymentMethod" alias="paymentMethod"/>
+		<typeAlias type="com.mycompany.webapp.vo.WithProduct" alias="withProduct"/> -->
+	</typeAliases>
+</configuration>
