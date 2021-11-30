@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mycompany.webapp.dao.OrderCompleteDao;
-import com.mycompany.webapp.dto.OrderCompleteMap;
+import com.mycompany.webapp.dto.ordercomplete.OrderCompleteMap;
+import com.mycompany.webapp.dto.orderlist.OrderListMap;
 import com.mycompany.webapp.vo.OrderItem;
 import com.mycompany.webapp.vo.Orders;
 
@@ -102,6 +103,10 @@ public class OrderService {
 		map.put("mid", mid);
 		map.put("oid", oid);
 		return orderCompleteDao.selectOrderByOid(map);
+	}
+	
+	public List<OrderListMap> getAllOrderList(String mid) {
+		return orderCompleteDao.selectAllOrderList(mid);
 	}
 
 //	@Transactional
