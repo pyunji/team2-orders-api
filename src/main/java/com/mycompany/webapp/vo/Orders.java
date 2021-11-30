@@ -14,7 +14,7 @@ public class Orders {
 	private String otel;
 	private String memo;
 	private String oemail;
-	private Integer usedMileage;
+	private int usedMileage;
 	private int beforeDcPrice;
 	private int afterDcPrice;
 	private String paymentInfo;

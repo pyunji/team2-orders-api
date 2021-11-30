@@ -92,7 +92,7 @@
 		select distinct
 		pstockid, ocount, pcolorid, bname, pname, scode, ccode, img1,
 		oid, odate, used_mileage, total_price, before_dc_price, after_dc_price
-		, payment_info, company, payment_method_code, ozipcode, oaddress,
+		, payment_info, payment_method_code, ozipcode, oaddress,
 		oreceiver, ophone, otel, memo
 		from order_item
 		join orders using(oid)
@@ -100,7 +100,6 @@
 		join product_color using(pcolorid)
 		join product_common using(pcommonid)
 		join brand using(bno)
-		join payment_method using(payment_method_code)
 		where orders.mid = #{mid}
 		and oid = #{oid}
 	</select>

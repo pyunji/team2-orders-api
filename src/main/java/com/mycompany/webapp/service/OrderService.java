@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mycompany.webapp.dao.OrderCompleteDao;
 import com.mycompany.webapp.dto.ordercomplete.OrderCompleteMap;
+import com.mycompany.webapp.dto.ordercomplete.OrderItemInfo;
 import com.mycompany.webapp.dto.orderlist.OrderListMap;
 import com.mycompany.webapp.vo.OrderItem;
 import com.mycompany.webapp.vo.Orders;
@@ -59,16 +60,16 @@ public class OrderService {
 	}
 
 	@Transactional
-	public String makeOrder(String mid, List<Map> cartItems, Orders order) {
+	public String makeOrder(String mid, List<OrderItemInfo> cartItems, Orders order) {
 		// orderid 생성 -> orderid = yyyyMMddHHmmss + userid
 		String madeOrderId = makeOrderId(mid, order);
 		order.setOid(madeOrderId);
-
+		order.setMid(mid);
 		// Orders 테이블에 주문번호로 주문 데이터 입력
 		orderCompleteDao.insertOrders(order);
 		Date odate = new Date();
 		for (int i = 0; i < cartItems.size(); i++) {
-			Map<String, String> product = cartItems.get(i);
+			OrderItemInfo product = cartItems.get(i);
 
 			/*			// 재고 업데이트
 						String productStockId = product.getString("pcolorId") + "_" + product.getString("sizeCode");
@@ -78,10 +79,9 @@ public class OrderService {
 			OrderItem orderItem = new OrderItem();
 			orderItem.setOid(madeOrderId);
 			orderItem.setOdate(odate);
-			orderItem.setOcount(Integer.parseInt(product.get("quantity")));
-			orderItem.setPstockid(product.get("pstockid"));
-			orderItem.setTotalPrice(Integer.parseInt(product.get("appliedPrice")));
-
+			orderItem.setOcount(product.getQuantity());
+			orderItem.setPstockid(product.getPstockid());
+			orderItem.setTotalPrice(product.getAppliedPrice());
 			// orderitem table에 각 주문상품 데이터를 입력
 			orderCompleteDao.insertOrderitem(orderItem);
 
