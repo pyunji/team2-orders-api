@@ -11,5 +11,6 @@ public class OrderItemListMap {
 	String scode;
 	String ccode;
 	String img1;
+	String ostatus;
 	Integer totalPrice;
 }
