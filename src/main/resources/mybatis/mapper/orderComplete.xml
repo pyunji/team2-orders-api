@@ -87,6 +87,7 @@
 		<result property="ccode" column="ccode"/>
 		<result property="img1" column="img1"/>
 		<result property="totalPrice" column="total_price"/>
+		<result property="ostatus" column="ostatus"/>
 	</resultMap>
 	<select id="selectOrderByOid" parameterType="map" resultMap="orderCompleteMap">
 		select distinct
@@ -135,7 +136,7 @@
 
 	<select id="selectAllOrderList" parameterType="String" resultMap="orderListMap">
 	select distinct oid, pstockid, ocount, bname, pname,
-			scode, ccode, img1, total_price
+			scode, ccode, img1, total_price, ostatus
 		from orders 
                join order_item using(oid)
                join product_stock using(pstockid)
