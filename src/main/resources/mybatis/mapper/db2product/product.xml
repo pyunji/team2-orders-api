@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mycompany.webapp.dao.db2product.ProductDao">
+	<resultMap type="orders" id="ordersMap">
+		<id property="id" column="ordersid"/>
+		<result property="zipcode" column="ordersZipcode"/>
+		<result property="address" column="address"/>
+		<result property="receiver" column="receiver"/>
+		<result property="phone" column="ordersPhone"/>
+		<result property="tel" column="ordersTel"/>
+		<result property="memo" column="memo"/>
+		<result property="email" column="ordersEmail"/>
+		<result property="usedMileage" column="used_mileage"/>
+		<result property="beforeDcPrice" column="before_dc_price"/>
+		<result property="afterDcPrice" column="after_dc_price"/>
+		<result property="paymentInfo" column="payment_info"/>
+		<result property="status" column="status"/>
+		<result property="deliveryStatus" column="delivery_status"/>
+		<result property="memberId" column="member_id"/>
+		<result property="paymentMethodCode"
+			column="payment_method_code"/>
+	</resultMap>
+
+	<resultMap type="orderItem" id="orderItemMap">
+		<id property="productStockId" column="orderstockid"/>
+		<result property="ordersId" column="orders_id"/>
+		<result property="count" column="count"/>
+		<result property="totalPrice" column="total_price"/>
+		<result property="orderByTime" column="order_by_time"/>
+	</resultMap>
+
+
+	<resultMap type="com.mycompany.webapp.dto.ordercomplete.OrderCompleteMap" id="orderCompleteMap">
+		<id property="oid" column="oid"/>
+		<result property="odate" column="odate"/>
+		<result property="usedMileage" column="used_mileage"/>
+		<result property="totalPrice" column="total_price"/>
+		<result property="beforeDcPrice" column="before_dc_price"/>
+		<result property="afterDcPrice" column="after_dc_price"/>
+		<result property="paymentInfo" column="payment_info"/>
+		<result property="company" column="company"/>
+		<result property="paymentMethodCode" column="payment_method_code"/>
+		<result property="ozipcode" column="ozipcode"/>
+		<result property="oaddress" column="oaddress"/>
+		<result property="oreceiver" column="oreceiver"/>
+		<result property="ophone" column="ophone"/>
+		<result property="otel" column="otel"/>
+		<result property="memo" column="memo"/>
+		<collection property="orderItemListMap" javaType="java.util.ArrayList" resultMap="orderItemListMap"/>
+	</resultMap>
+	
+	<resultMap type="com.mycompany.webapp.dto.ordercomplete.OrderItemListMap" id="orderItemListMap">
+		<id property="pstockid" column="pstockid"/>
+		<result property="pcolorid" column="pcolorid"/>
+		<result property="bname" column="bname"/>
+		<result property="pname" column="pname"/>
+		<result property="scode" column="scode"/>
+		<result property="ccode" column="ccode"/>
+		<result property="img1" column="img1"/>
+		<result property="ocount" column="ocount"/>
+	</resultMap>
+	
+	<resultMap type="com.mycompany.webapp.dto.orderlist.OrderListMap" id="orderListMap">
+		<id property="oid" column="oid"/>
+		<collection property="orderItemListMap" javaType="java.util.ArrayList" resultMap="orderItemListMap2"></collection>
+	</resultMap>
+
+	<resultMap type="com.mycompany.webapp.dto.orderlist.OrderItemListMap" id="orderItemListMap2">
+		<id property="pstockid" column="pstockid"/>
+		<result property="ocount" column="ocount"/>
+		<result property="bname" column="bname"/>
+		<result property="pname" column="pname"/>
+		<result property="scode" column="scode"/>
+		<result property="ccode" column="ccode"/>
+		<result property="img1" column="img1"/>
+		<result property="totalPrice" column="total_price"/>
+		<result property="ostatus" column="ostatus"/>
+	</resultMap>
+	<select id="selectOrderByOid" parameterType="map" resultMap="orderCompleteMap">
+		select distinct
+		pstockid, ocount, pcolorid, bname, pname, scode, ccode, img1,
+		oid, odate, used_mileage, total_price, before_dc_price, after_dc_price
+		, payment_info, payment_method_code, ozipcode, oaddress,
+		oreceiver, ophone, otel, memo
+		from order_item
+		join orders using(oid)
+		join product_stock using(pstockid)
+		join product_color using(pcolorid)
+		join product_common using(pcommonid)
+		join brand using(bno)
+		where orders.mid = #{mid}
+		and oid = #{oid}
+	</select>
+
+	<select id="selectAllOrderList" parameterType="String" resultMap="orderListMap">
+	select distinct oid, pstockid, ocount, bname, pname,
+			scode, ccode, img1, total_price, ostatus
+		from orders 
+               join order_item using(oid)
+               join product_stock using(pstockid)
+               join product_color using(pcolorid) 
+               join product_common using(pcommonid)
+               join brand using(bno)
+		where orders.mid = #{mid}
+	</select>
+</mapper>
+   
+   
+   

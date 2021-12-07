@@ -11,20 +11,28 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mycompany.webapp.dao.OrderCompleteDao;
+import com.mycompany.webapp.dao.db1member.CartDao;
+import com.mycompany.webapp.dao.db2product.StockDao;
+import com.mycompany.webapp.dao.db3orders.OrdersDao;
 import com.mycompany.webapp.dto.ordercomplete.OrderCompleteMap;
 import com.mycompany.webapp.dto.ordercomplete.OrderItemInfo;
+import com.mycompany.webapp.dto.ordercomplete.Stock;
 import com.mycompany.webapp.dto.orderlist.OrderListMap;
+import com.mycompany.webapp.exception.OutOfStockException;
+import com.mycompany.webapp.vo.Cart;
 import com.mycompany.webapp.vo.OrderItem;
 import com.mycompany.webapp.vo.Orders;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class OrderService {
-	@Resource private OrderCompleteDao orderCompleteDao;
+	@Resource private OrdersDao orderCompleteDao;
 //
-//	@Resource CartDao cartDao;
+	@Resource CartDao cartDao;
 //
-//	@Resource private StockDao stockDao;
+	@Resource private StockDao stockDao;
 //
 //	@Resource private MileageDao mileageDao;
 //
@@ -60,7 +68,7 @@ public class OrderService {
 	}
 
 	@Transactional
-	public String makeOrder(String mid, List<OrderItemInfo> cartItems, Orders order) {
+	public String makeOrder(String mid, List<OrderItemInfo> orderItemInfos, Orders order) {
 		// orderid 생성 -> orderid = yyyyMMddHHmmss + userid
 		String madeOrderId = makeOrderId(mid, order);
 		order.setOid(madeOrderId);
@@ -68,28 +76,28 @@ public class OrderService {
 		// Orders 테이블에 주문번호로 주문 데이터 입력
 		orderCompleteDao.insertOrders(order);
 		Date odate = new Date();
-		for (int i = 0; i < cartItems.size(); i++) {
-			OrderItemInfo product = cartItems.get(i);
+		for (int i = 0; i < orderItemInfos.size(); i++) {
+			OrderItemInfo orderItemInfo = orderItemInfos.get(i);
 
-			/*			// 재고 업데이트
-						String productStockId = product.getString("pcolorId") + "_" + product.getString("sizeCode");
-						Stock stock = new Stock(productStockId, product.getInt("quantity"));
-						updateStock(stock, "-");
-			*/
+			// 재고 업데이트
+			String pstockid = orderItemInfo.getPstockid();
+			Stock stock = new Stock(pstockid, orderItemInfo.getQuantity());
+			updateStock(stock, "-");
+			
 			OrderItem orderItem = new OrderItem();
 			orderItem.setOid(madeOrderId);
 			orderItem.setOdate(odate);
-			orderItem.setOcount(product.getQuantity());
-			orderItem.setPstockid(product.getPstockid());
-			orderItem.setTotalPrice(product.getAppliedPrice());
+			orderItem.setOcount(orderItemInfo.getQuantity());
+			orderItem.setPstockid(orderItemInfo.getPstockid());
+			orderItem.setTotalPrice(orderItemInfo.getAppliedPrice());
 			// orderitem table에 각 주문상품 데이터를 입력
 			orderCompleteDao.insertOrderitem(orderItem);
 
-			/*			// 주문한 상품 장바구니에서 삭제
-						Cart cart = new Cart();
-						cart.setMemberId(principal.getName());
-						cart.setProductStockId(product.getString("pcolorId") + "_" + product.getString("sizeCode"));
-						cartDao.deleteByMemberIdAndProductStockId(cart);*/
+			// 주문한 상품 장바구니에서 삭제
+			Cart cart = new Cart();
+			cart.setMid(mid);
+			cart.setPstockid(pstockid);
+			cartDao.deleteByMemberIdAndProductStockId(cart);
 
 		}
 		/*		if(order.getUsedMileage()!= null || order.getUsedMileage()!= 0) {
@@ -131,27 +139,27 @@ public class OrderService {
 		return madeOrderId;
 	}
 //
-//	@Transactional
-//	public void updateStock(Stock stock, String operator) {
-//		logger.info("실행");
-//		logger.info("stock = " + stock);
-//		Stock oldStock = stockDao.select(stock);
-//		logger.info("oldStock: " +  oldStock);
-//		int oldQuantity = oldStock.getQuantity();
-//		logger.info("oldQuantity: " + oldQuantity);
-//		int newQuantity = 0;
-//		if (operator == "-") {
-//			newQuantity = oldQuantity - stock.getQuantity();
-//			if (newQuantity < 0) {
-//				throw new OutOfStockException("outOfStock");
-//			}
-//		} else if (operator == "+") {
-//			newQuantity = oldQuantity + stock.getQuantity();
-//		}
-//		logger.info("newQuantity: " + newQuantity);
-//		Stock newStock = new Stock(stock.getProductStockId(), newQuantity);
-//		stockDao.update(newStock);
-//	}
+	@Transactional
+	public void updateStock(Stock stock, String operator) {
+		log.info("실행");
+		log.info("stock = " + stock);
+		Stock oldStock = stockDao.select(stock);
+		log.info("oldStock: " +  oldStock);
+		int oldQuantity = oldStock.getStock();
+		log.info("oldQuantity: " + oldQuantity);
+		int newQuantity = 0;
+		if (operator == "-") {
+			newQuantity = oldQuantity - stock.getStock();
+			if (newQuantity < 0) {
+				throw new OutOfStockException("outOfStock");
+			}
+		} else if (operator == "+") {
+			newQuantity = oldQuantity + stock.getStock();
+		}
+		log.info("newQuantity: " + newQuantity);
+		Stock newStock = new Stock(stock.getPstockid(), newQuantity);
+		stockDao.update(newStock);
+	}
 //
 //	/**
 //	 * @param principal

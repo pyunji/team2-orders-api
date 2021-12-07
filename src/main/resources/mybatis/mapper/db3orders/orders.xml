@@ -1,19 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mycompany.webapp.dao.OrderCompleteDao">
-
-
-	<!-- <resultMap type="member" id="memberMap"> <id property="id" column="memberid"/> 
-		<result property="password" column="password"/> <result property="name" column="memberName"/> 
-		<result property="email" column="memberEmail"/> <result property="phone" 
-		column="memberPhone"/> <result property="tel" column="memberTel"/> <result 
-		property="zipcode" column="memberZipcode"/> <result property="address1" column="address1"/> 
-		<result property="address2" column="address2"/> <result property="birth" 
-		column="birth"/> <result property="gender" column="gender"/> <result property="refId" 
-		column="ref_id"/> <result property="loginType" column="login_type"/> <result 
-		property="tosNo" column="tos_no"/> <result property="enabled" column="enabled"/> 
-		<result property="role" column="role"/> </resultMap> -->
-
+<mapper namespace="com.mycompany.webapp.dao.db3orders.OrdersDao">
 	<resultMap type="orders" id="ordersMap">
 		<id property="id" column="ordersid"/>
 		<result property="zipcode" column="ordersZipcode"/>

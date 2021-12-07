@@ -1,4 +1,4 @@
-package com.mycompany.webapp.dao;
+package com.mycompany.webapp.dao.db3orders;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,7 @@ import com.mycompany.webapp.vo.OrderItem;
 import com.mycompany.webapp.vo.Orders;
 
 @Mapper
-public interface OrderCompleteDao {
+public interface OrdersDao {
 //	List<OrderComplete> selectProductByorderId(@Param("mid") String mid, @Param("ordersId") String ordersId);
 //	List<OrderComplete> selectpaymentByorderId(@Param("mid") String mid, @Param("ordersId") String ordersId);
 //	List<OrderComplete> selectaddressByorderId(@Param("mid") String mid, @Param("ordersId") String ordersId);

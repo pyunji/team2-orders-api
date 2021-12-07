@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mycompany.webapp.dao.db2product.StockDao">
+
+<select id="select" parameterType="com.mycompany.webapp.dto.ordercomplete.Stock" resultType="com.mycompany.webapp.dto.ordercomplete.Stock">
+SELECT pstockid, stock 
+FROM PRODUCT_STOCK WHERE pstockid = #{pstockid}
+</select>
+
+<update id="update" parameterType="com.mycompany.webapp.dto.ordercomplete.Stock">
+UPDATE PRODUCT_STOCK 
+SET stock = #{stock} 
+WHERE pstockid = #{pstockid}
+</update>
+
+</mapper>
