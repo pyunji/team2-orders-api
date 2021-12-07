@@ -3,6 +3,8 @@ package com.mycompany.webapp.security;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -58,8 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.cors();
 	}
 	
-	@Resource
-	private DataSource dataSource;
+	@Autowired @Qualifier("db1DataSource") DataSource dataSource;
 	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
