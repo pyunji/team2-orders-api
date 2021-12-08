@@ -3,7 +3,7 @@ package com.mycompany.webapp.dto.ordercomplete;
 import lombok.Data;
 
 @Data
-public class OrderItemListMap {
+public class OrderCompleteItem {
 	private String pstockid;
 	private String pcolorid;
 	private String bname;
@@ -12,4 +12,5 @@ public class OrderItemListMap {
 	private String ccode;
 	private String img1;
 	private Integer ocount;
+	private Integer totalPrice;
 }

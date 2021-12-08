@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mycompany.webapp.dao.db3orders.OrdersDao">
-	<resultMap type="orders" id="ordersMap">
+<!-- 	<resultMap type="orders" id="ordersMap">
 		<id property="id" column="ordersid"/>
 		<result property="zipcode" column="ordersZipcode"/>
 		<result property="address" column="address"/>
@@ -19,7 +19,7 @@
 		<result property="memberId" column="member_id"/>
 		<result property="paymentMethodCode"
 			column="payment_method_code"/>
-	</resultMap>
+	</resultMap>-->
 
 	<resultMap type="orderItem" id="orderItemMap">
 		<id property="productStockId" column="orderstockid"/>
@@ -34,7 +34,7 @@
 		<id property="oid" column="oid"/>
 		<result property="odate" column="odate"/>
 		<result property="usedMileage" column="used_mileage"/>
-		<result property="totalPrice" column="total_price"/>
+		<!-- <result property="totalPrice" column="total_price"/> -->
 		<result property="beforeDcPrice" column="before_dc_price"/>
 		<result property="afterDcPrice" column="after_dc_price"/>
 		<result property="paymentInfo" column="payment_info"/>
@@ -46,10 +46,11 @@
 		<result property="ophone" column="ophone"/>
 		<result property="otel" column="otel"/>
 		<result property="memo" column="memo"/>
-		<collection property="orderItemListMap" javaType="java.util.ArrayList" resultMap="orderItemListMap"/>
+		<result property="ostatus" column="ostatus"/>
+		<collection property="orderCompleteItems" javaType="java.util.ArrayList" resultMap="orderCompleteItemListMap"/>
 	</resultMap>
 	
-	<resultMap type="com.mycompany.webapp.dto.ordercomplete.OrderItemListMap" id="orderItemListMap">
+	<resultMap type="com.mycompany.webapp.dto.ordercomplete.OrderCompleteItem" id="orderCompleteItemListMap">
 		<id property="pstockid" column="pstockid"/>
 		<result property="pcolorid" column="pcolorid"/>
 		<result property="bname" column="bname"/>
@@ -58,14 +59,16 @@
 		<result property="ccode" column="ccode"/>
 		<result property="img1" column="img1"/>
 		<result property="ocount" column="ocount"/>
+		<result property="totalPrice" column="total_price"/>
 	</resultMap>
 	
-	<resultMap type="com.mycompany.webapp.dto.orderlist.OrderListMap" id="orderListMap">
+	<resultMap type="com.mycompany.webapp.dto.orderlist.OrderHistoryMap" id="orderListMap">
 		<id property="oid" column="oid"/>
-		<collection property="orderItemListMap" javaType="java.util.ArrayList" resultMap="orderItemListMap2"></collection>
+		<result property="ostatus" column="ostatus"/>
+		<collection property="orderHistoryItems" javaType="java.util.ArrayList" resultMap="orderListItemListMap"/>
 	</resultMap>
 
-	<resultMap type="com.mycompany.webapp.dto.orderlist.OrderItemListMap" id="orderItemListMap2">
+	<resultMap type="com.mycompany.webapp.dto.orderlist.OrderHistoryItem" id="orderListItemListMap">
 		<id property="pstockid" column="pstockid"/>
 		<result property="ocount" column="ocount"/>
 		<result property="bname" column="bname"/>
@@ -74,21 +77,13 @@
 		<result property="ccode" column="ccode"/>
 		<result property="img1" column="img1"/>
 		<result property="totalPrice" column="total_price"/>
-		<result property="ostatus" column="ostatus"/>
-	</resultMap>
-	<select id="selectOrderByOid" parameterType="map" resultMap="orderCompleteMap">
-		select distinct
-		pstockid, ocount, pcolorid, bname, pname, scode, ccode, img1,
-		oid, odate, used_mileage, total_price, before_dc_price, after_dc_price
-		, payment_info, payment_method_code, ozipcode, oaddress,
-		oreceiver, ophone, otel, memo
-		from order_item
-		join orders using(oid)
-		join product_stock using(pstockid)
-		join product_color using(pcolorid)
-		join product_common using(pcommonid)
-		join brand using(bno)
-		where orders.mid = #{mid}
+	</resultMap> 
+	
+	<select id="selectOrderInfoByOid" parameterType="map" resultMap="orderCompleteMap">
+		select *
+		from orders join order_item
+			using(oid)
+		where mid = #{mid}
 		and oid = #{oid}
 	</select>
 
@@ -122,7 +117,10 @@
 	</insert>
 
 	<select id="selectAllOrderList" parameterType="String" resultMap="orderListMap">
-	select distinct oid, pstockid, ocount, bname, pname,
+		select *
+		from orders join order_item using(oid)
+		where mid = #{mid}
+<!-- 	select distinct oid, pstockid, ocount, bname, pname,
 			scode, ccode, img1, total_price, ostatus
 		from orders 
                join order_item using(oid)
@@ -130,7 +128,7 @@
                join product_color using(pcolorid) 
                join product_common using(pcommonid)
                join brand using(bno)
-		where orders.mid = #{mid}
+		where orders.mid = #{mid} -->
 	</select>
 </mapper>
    

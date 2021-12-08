@@ -10,7 +10,6 @@ public class OrderCompleteMap {
 	private String oid;
 	private Date odate; 
 	private Integer usedMileage;
-	private Integer totalPrice;
 	private Integer beforeDcPrice;
 	private Integer afterDcPrice;
 	private String paymentInfo;
@@ -22,5 +21,6 @@ public class OrderCompleteMap {
 	private String ophone;
 	private String otel;
 	private String memo;
-	private List<OrderItemListMap> orderItemListMap;
+	private String ostatus;
+	private List<OrderCompleteItem> orderCompleteItems;
 }

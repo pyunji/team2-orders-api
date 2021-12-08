@@ -3,6 +3,7 @@ package com.mycompany.webapp.service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,12 +13,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mycompany.webapp.dao.db1member.CartDao;
+import com.mycompany.webapp.dao.db2product.ProductDao;
 import com.mycompany.webapp.dao.db2product.StockDao;
 import com.mycompany.webapp.dao.db3orders.OrdersDao;
+import com.mycompany.webapp.dto.OrderProduct;
+import com.mycompany.webapp.dto.fromCartToOrder.OrderItemInfo;
 import com.mycompany.webapp.dto.ordercomplete.OrderCompleteMap;
-import com.mycompany.webapp.dto.ordercomplete.OrderItemInfo;
+import com.mycompany.webapp.dto.ordercomplete.OrderCompleteItem;
 import com.mycompany.webapp.dto.ordercomplete.Stock;
-import com.mycompany.webapp.dto.orderlist.OrderListMap;
+import com.mycompany.webapp.dto.orderlist.OrderHistoryItem;
+import com.mycompany.webapp.dto.orderlist.OrderHistoryMap;
 import com.mycompany.webapp.exception.OutOfStockException;
 import com.mycompany.webapp.vo.Cart;
 import com.mycompany.webapp.vo.OrderItem;
@@ -28,11 +33,13 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class OrderService {
-	@Resource private OrdersDao orderCompleteDao;
-//
+	@Resource private OrdersDao ordersDao;
+
 	@Resource CartDao cartDao;
-//
+
 	@Resource private StockDao stockDao;
+	
+	@Resource private ProductDao productDao;
 //
 //	@Resource private MileageDao mileageDao;
 //
@@ -59,12 +66,12 @@ public class OrderService {
 
 	@Transactional(rollbackFor = Exception.class)
 	public int orderProducts(Orders order) {
-		return orderCompleteDao.insertOrders(order);
+		return ordersDao.insertOrders(order);
 	}
 
 	@Transactional(rollbackFor = Exception.class)
 	public int specificOrder(OrderItem orderitem) {
-		return orderCompleteDao.insertOrderitem(orderitem);
+		return ordersDao.insertOrderitem(orderitem);
 	}
 
 	@Transactional
@@ -74,7 +81,7 @@ public class OrderService {
 		order.setOid(madeOrderId);
 		order.setMid(mid);
 		// Orders 테이블에 주문번호로 주문 데이터 입력
-		orderCompleteDao.insertOrders(order);
+		ordersDao.insertOrders(order);
 		Date odate = new Date();
 		for (int i = 0; i < orderItemInfos.size(); i++) {
 			OrderItemInfo orderItemInfo = orderItemInfos.get(i);
@@ -91,7 +98,7 @@ public class OrderService {
 			orderItem.setPstockid(orderItemInfo.getPstockid());
 			orderItem.setTotalPrice(orderItemInfo.getAppliedPrice());
 			// orderitem table에 각 주문상품 데이터를 입력
-			orderCompleteDao.insertOrderitem(orderItem);
+			ordersDao.insertOrderitem(orderItem);
 
 			// 주문한 상품 장바구니에서 삭제
 			Cart cart = new Cart();
@@ -106,15 +113,57 @@ public class OrderService {
 		return madeOrderId;
 	}
 	
+	/* 주문번호로 하나의 주문을 가져오는 메서드 */
+	@Transactional
 	public OrderCompleteMap selectOrderByOid(String mid, String oid) {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("mid", mid);
 		map.put("oid", oid);
-		return orderCompleteDao.selectOrderByOid(map);
+		OrderCompleteMap orderCompleteMap = ordersDao.selectOrderInfoByOid(map);
+		for(OrderCompleteItem orderItem : orderCompleteMap.getOrderCompleteItems()){
+			String pstockid = orderItem.getPstockid();
+			String[] productInfo = pstockid.split("_");
+			String pcolorid = productInfo[0] + "_"+ productInfo[1];
+			String ccode = productInfo[1];
+			String scode = productInfo[2];
+			OrderProduct orderProduct = productDao.selectProductByPcolorid(pcolorid);
+			orderItem.setPcolorid(pcolorid);
+			orderItem.setBname(orderProduct.getBname());
+			orderItem.setPname(orderProduct.getPname());
+			orderItem.setImg1(orderProduct.getImg1());
+			orderItem.setCcode(ccode);
+			orderItem.setScode(scode);
+		}
+		
+		return orderCompleteMap;
 	}
-	
-	public List<OrderListMap> getAllOrderList(String mid) {
-		return orderCompleteDao.selectAllOrderList(mid);
+	/* 한 회원의 모든 주문 내역을 가져오는 메서드 */
+	@Transactional
+	public List<OrderHistoryMap> getOrderHistory(String mid) {
+		List<OrderHistoryMap> orderHistoryList = ordersDao.selectAllOrderList(mid);
+		for(OrderHistoryMap orderHistory : orderHistoryList) {
+			log.info("orderHistory.getOid() = " + orderHistory.getOid());
+			List<OrderHistoryItem> orderHistoryItems = orderHistory.getOrderHistoryItems();
+			for(OrderHistoryItem orderHistoryItem : orderHistoryItems) {
+				String pstockid = orderHistoryItem.getPstockid();
+				String[] productInfo = pstockid.split("_");
+				String pcolorid = productInfo[0] + "_"+ productInfo[1];
+				String ccode = productInfo[1];
+				String scode = productInfo[2];
+				OrderProduct orderProduct = productDao.selectProductByPcolorid(pcolorid);
+				log.info("orderProduct = " + orderProduct);
+				orderHistoryItem.setPcolorid(pcolorid);
+				orderHistoryItem.setBname(orderProduct.getBname());
+				orderHistoryItem.setPname(orderProduct.getPname());
+				orderHistoryItem.setImg1(orderProduct.getImg1());
+				orderHistoryItem.setCcode(ccode);
+				orderHistoryItem.setScode(scode);
+			}
+		}
+		
+		log.info("orderHistoryList = " + orderHistoryList);
+		
+		return orderHistoryList;
 	}
 
 //	@Transactional
