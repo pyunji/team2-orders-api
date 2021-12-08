@@ -5,7 +5,8 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class OrderListMap {
+public class OrderHistoryMap {
 	String oid;
-	List<OrderItemListMap> orderItemListMap;
+	String ostatus;
+	List<OrderHistoryItem> orderHistoryItems;
 }

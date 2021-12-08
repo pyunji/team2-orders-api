@@ -1,4 +1,4 @@
-package com.mycompany.webapp.dto.ordercomplete;
+package com.mycompany.webapp.dto.fromCartToOrder;
 
 import lombok.Data;
 

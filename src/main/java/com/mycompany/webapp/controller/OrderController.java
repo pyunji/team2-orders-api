@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mycompany.webapp.dto.ordercomplete.OrderAllInfo;
+import com.mycompany.webapp.dto.fromCartToOrder.OrderAllInfo;
 import com.mycompany.webapp.dto.ordercomplete.OrderCompleteMap;
-import com.mycompany.webapp.dto.orderlist.OrderListMap;
+import com.mycompany.webapp.dto.orderlist.OrderHistoryMap;
 import com.mycompany.webapp.security.JwtUtil;
 import com.mycompany.webapp.service.OrderService;
 import com.mycompany.webapp.vo.Orders;
@@ -65,8 +65,6 @@ public class OrderController {
 			log.info("madeOrderId = {}", madeOrderId);
 			
 			return madeOrderId;
-//			return mid;
-		
 	}
 	
 	// 주문 완료 페이지. 주문 완료 후 주문 번호를 넘겨받아서 데이터 가져옴
@@ -81,9 +79,11 @@ public class OrderController {
 	}
 	
 	@GetMapping("/orderlist")
-	public List<OrderListMap> showAllOrder(HttpServletRequest request) {
+	public List<OrderHistoryMap> showAllOrder(HttpServletRequest request) {
 		mid = JwtUtil.getMidFromRequest(request);
-		return orderService.getAllOrderList(mid);
+		List<OrderHistoryMap> orderHistory = orderService.getOrderHistory(mid);
+		log.info("orderHistory = " + orderHistory);
+		return orderHistory;
 	}
 
 }
