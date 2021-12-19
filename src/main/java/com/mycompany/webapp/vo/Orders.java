@@ -22,5 +22,5 @@ public class Orders {
 	private String deliveryStatus;
 	private String mid;
 	private String paymentMethodCode;
-	
+	private int addMileage;
 }

@@ -13,4 +13,5 @@ public class OrderItemInfo {
 	private Integer appliedPrice;
 	private Integer pprice;
 	private Integer quantity;
+	private String usedmileage;
 }

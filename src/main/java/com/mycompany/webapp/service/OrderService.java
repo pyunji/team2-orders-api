@@ -3,7 +3,6 @@ package com.mycompany.webapp.service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -13,13 +12,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mycompany.webapp.dao.db1member.CartDao;
+import com.mycompany.webapp.dao.db1member.OrdersMemberDao;
 import com.mycompany.webapp.dao.db2product.ProductDao;
 import com.mycompany.webapp.dao.db2product.StockDao;
 import com.mycompany.webapp.dao.db3orders.OrdersDao;
 import com.mycompany.webapp.dto.OrderProduct;
 import com.mycompany.webapp.dto.fromCartToOrder.OrderItemInfo;
-import com.mycompany.webapp.dto.ordercomplete.OrderCompleteMap;
+import com.mycompany.webapp.dto.fromCartToOrder.OrderMember;
 import com.mycompany.webapp.dto.ordercomplete.OrderCompleteItem;
+import com.mycompany.webapp.dto.ordercomplete.OrderCompleteMap;
 import com.mycompany.webapp.dto.ordercomplete.Stock;
 import com.mycompany.webapp.dto.orderlist.OrderHistoryItem;
 import com.mycompany.webapp.dto.orderlist.OrderHistoryMap;
@@ -40,6 +41,8 @@ public class OrderService {
 	@Resource private StockDao stockDao;
 	
 	@Resource private ProductDao productDao;
+	
+	@Resource private OrdersMemberDao ordersMemberDao;
 //
 //	@Resource private MileageDao mileageDao;
 //
@@ -80,9 +83,18 @@ public class OrderService {
 		String madeOrderId = makeOrderId(mid, order);
 		order.setOid(madeOrderId);
 		order.setMid(mid);
+		//Member 테이블에서 마일리지 감소 및 추가
+		int getMileage = ordersMemberDao.getOrdersMember(order.getMid());
+		log.info("추가 마일리지 확인" + order.getAddMileage());
+		int	reflectMileage = getMileage - order.getUsedMileage();
+		reflectMileage = reflectMileage + order.getAddMileage();
+		OrderMember orderMember = new OrderMember();
+		orderMember.setMid(mid);
+		orderMember.setMileage(reflectMileage);
+		ordersMemberDao.reflectMileage(mid, reflectMileage);
 		// Orders 테이블에 주문번호로 주문 데이터 입력
 		ordersDao.insertOrders(order);
-		Date odate = new Date();
+		Date odate = new Date(); /* 수정 권장 */
 		for (int i = 0; i < orderItemInfos.size(); i++) {
 			OrderItemInfo orderItemInfo = orderItemInfos.get(i);
 
