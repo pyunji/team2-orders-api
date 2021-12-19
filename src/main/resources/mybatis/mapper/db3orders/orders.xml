@@ -108,7 +108,7 @@
 		)
 		values (#{oid}, #{ozipcode},
 		#{oaddress},#{oreceiver},#{ophone},#{otel},#{memo},#{oemail},#{usedMileage},#{beforeDcPrice},#{afterDcPrice},#{paymentInfo},
-		#{ostatus}, #{deliveryStatus},#{mid},#{paymentMethodCode})
+		'주문 완료', '배송 대기중',#{mid},#{paymentMethodCode})
 	</insert>
 
 	<insert id="insertOrderitem" parameterType="orderItem">
