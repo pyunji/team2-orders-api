@@ -162,6 +162,7 @@ public class OrderService {
 				String pcolorid = productInfo[0] + "_"+ productInfo[1];
 				String ccode = productInfo[1];
 				String scode = productInfo[2];
+				orderHistoryItem.setOdate(orderHistoryItem.getOdate().split(" ")[0]);
 				OrderProduct orderProduct = productDao.selectProductByPcolorid(pcolorid);
 				log.info("orderProduct = " + orderProduct);
 				orderHistoryItem.setPcolorid(pcolorid);
