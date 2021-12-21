@@ -71,6 +71,7 @@
 	<resultMap type="com.mycompany.webapp.dto.orderlist.OrderHistoryItem" id="orderListItemListMap">
 		<id property="pstockid" column="pstockid"/>
 		<result property="ocount" column="ocount"/>
+		<result property="odate" column="odate"/>
 		<result property="bname" column="bname"/>
 		<result property="pname" column="pname"/>
 		<result property="scode" column="scode"/>
@@ -117,9 +118,11 @@
 	</insert>
 
 	<select id="selectAllOrderList" parameterType="String" resultMap="orderListMap">
+		<!-- select oid, bname, ccode, img1, ocount, trunc(odate), pcolorid, pname, pstockid, scode, total_price -->
 		select *
 		from orders join order_item using(oid)
 		where mid = #{mid}
+		order by odate desc
 <!-- 	select distinct oid, pstockid, ocount, bname, pname,
 			scode, ccode, img1, total_price, ostatus
 		from orders 

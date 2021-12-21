@@ -12,5 +12,6 @@ public class OrderHistoryItem {
 	String scode;
 	String ccode;
 	String img1;
+	String odate;
 	Integer totalPrice;
 }
