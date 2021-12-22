@@ -15,7 +15,10 @@ import com.mycompany.webapp.dao.db1member.OrdersMemberDao;
 import com.mycompany.webapp.dto.MailData;
 import com.mycompany.webapp.dto.fromCartToOrder.OrderAllInfo;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service("mailService")
+@Slf4j
 public class MailService {
 	@Autowired
 	JavaMailSender javaMailSender;
@@ -24,6 +27,7 @@ public class MailService {
 	
 	// 1.2버전을 어디다 적용하라는거야..
 	public void sendTextMail(OrderAllInfo orderAllInfo) throws MessagingException {
+		log.info("메일 보내기");
 		String memail = orderAllInfo.getOrders().getMemail();
 		
 		MimeMessage message = javaMailSender.createMimeMessage();
