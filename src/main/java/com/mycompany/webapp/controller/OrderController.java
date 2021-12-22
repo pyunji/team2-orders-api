@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +19,7 @@ import com.mycompany.webapp.dto.fromCartToOrder.OrderAllInfo;
 import com.mycompany.webapp.dto.ordercomplete.OrderCompleteMap;
 import com.mycompany.webapp.dto.orderlist.OrderHistoryMap;
 import com.mycompany.webapp.security.JwtUtil;
+import com.mycompany.webapp.service.MailService;
 import com.mycompany.webapp.service.OrderService;
 import com.mycompany.webapp.vo.Orders;
 
@@ -30,33 +33,16 @@ public class OrderController {
 	private static List<Map> cartItems;
 	
 	@Resource OrderService orderService;
-	
-	
-	
-//	@RequestMapping("/orderform")
-//	public List<Map> orderform(HttpServletRequest request, @RequestBody List<Map> cartItems) {
-//		/*
-//		 * cartItems = [{pstockid=..., quantity=..., appliedPrice=...}]
-//		 */
-//		
-//		/* 요청 user의 id를 가져오는 부분 시작 */
-//		mid = JwtUtil.getMidFromRequest(request);
-//		/* //요청 user의 id를 가져오는 부분 끝 */
-//		this.cartItems = cartItems;
-//		
-//		/* 카트로부터 넘겨받은 데이터 그대로 다시 리턴 */
-//		return cartItems;
-//	}
-	
-	
 
+	@Autowired MailService mailService;
+	
 	@PostMapping("/ordercomplete")
 	/*
 	 * insert: orders테이블, orderItems테이블에 데이터 저장
 	 * delete: cart에서 해당 상품 삭제
 	 * update: product_stock 테이블에서 해당 상품 재고 업데이트
 	 */
-	public String orderComplete(HttpServletRequest request, @RequestBody OrderAllInfo orderAllInfo) {
+	public String orderComplete(HttpServletRequest request, @RequestBody OrderAllInfo orderAllInfo) throws MessagingException {
 			/* 요청 user의 id를 가져오는 부분 시작 */
 			mid = JwtUtil.getMidFromRequest(request);
 			/* //요청 user의 id를 가져오는 부분 끝 */
@@ -65,6 +51,8 @@ public class OrderController {
 			log.info("orderAllInfo = {}", orderAllInfo);
 			String madeOrderId = orderService.makeOrder(mid, orderAllInfo.getCartItems(), orderAllInfo.getOrders());
 			log.info("madeOrderId = {}", madeOrderId);
+			orderAllInfo.getOrders().setOid(madeOrderId);
+			mailService.sendTextMail(orderAllInfo);
 			
 			return madeOrderId;
 	}
