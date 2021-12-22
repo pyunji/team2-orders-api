@@ -9,6 +9,8 @@ public class Orders {
 	private String oid;
 	private String ozipcode;
 	private String oaddress;
+	private String mname; // 메일때문에 추가함
+	private String memail; // 메일때문에 추가함
 	private String oreceiver;
 	private String ophone;
 	private String otel;
