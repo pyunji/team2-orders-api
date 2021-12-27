@@ -1,15 +1,13 @@
 package com.mycompany.webapp.dto.ordercomplete;
 
-import java.util.Date;
 import java.util.List;
 
 import lombok.Data;
 
 @Data
-public class OrderCompleteMap {
+public class OrderCompleteMapToVue {
 	private String oid;
-	private Date odate; 
-	private String strDate;
+	private String odate; 
 	private Integer usedMileage;
 	private Integer beforeDcPrice;
 	private Integer afterDcPrice;
